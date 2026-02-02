@@ -75,7 +75,7 @@ const userSignin = asyncHandler(async (req, res) => {
     sameSite: "strict",
   };
 
-  res.cookie("accessToken", accessToken, cookieOptions); 
+  res.cookie("accessToken", accessToken, cookieOptions);
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
   const userData = {
@@ -83,6 +83,8 @@ const userSignin = asyncHandler(async (req, res) => {
     fullName: user.fullName,
     email: user.email,
     role: user.role,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
   };
 
   return res
@@ -100,15 +102,12 @@ const userSignin = asyncHandler(async (req, res) => {
 //     GET ALL USERS (ADMIN)
 // =========================
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({ role: "user" }).select(
-    "_id fullName email"
-  );
+  const users = await User.find({ role: "user" }).select("_id fullName email");
 
   return res
     .status(200)
     .json(new ApiResponse(200, users, "Users fetched successfully"));
 });
-
 
 // =========================
 //          LOGOUT
@@ -134,4 +133,4 @@ const userLogout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logout successfully."));
 });
 
-export { userSignup, userSignin,getAllUsers, userLogout };
+export { userSignup, userSignin, getAllUsers, userLogout };
