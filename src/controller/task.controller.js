@@ -17,7 +17,11 @@ export const createTask = asyncHandler(async (req, res) => {
     createdBy: req.user._id,
   });
 
-  res.status(201).json(new ApiResponse(201, task));
+  const populatedTask = await Task.findById(task._id)
+    .populate("createdBy", "fullName email")
+    .populate("assignedTo", "fullName email");
+
+  res.status(201).json(new ApiResponse(201, populatedTask));
 });
 
 export const getAllTasks = async (req, res) => {
@@ -56,7 +60,12 @@ export const updateTask = asyncHandler(async (req, res) => {
   }
 
   await task.save();
-  res.status(200).json(new ApiResponse(200, task));
+
+  const populatedTask = await Task.findById(task._id)
+    .populate("createdBy", "fullName email")
+    .populate("assignedTo", "fullName email");
+
+  res.status(200).json(new ApiResponse(200, populatedTask));
 });
 
 export const deleteTask = asyncHandler(async (req, res) => {
